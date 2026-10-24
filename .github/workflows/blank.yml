@@ -1,3 +1,4 @@
+
 name: Build DuelPack APK
 
 on:
@@ -17,8 +18,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 
       - name: Find project ZIP
+        shell: bash
         run: |
           echo "Arquivos na raiz:"
           ls -la
@@ -31,19 +32,22 @@ jobs:
           fi
 
           echo "ZIP selecionado: $ZIP_FILE"
-          mkdir extracted
+          mkdir -p extracted
           unzip -q "$ZIP_FILE" -d extracted
 
-
       - name: Locate Android project
+        shell: bash
         run: |
-          SETTINGS=$(find extracted \( -name settings.gradle -o -name settings.gradle.kts \) | head -n 1)
+          SETTINGS=$(find extracted \( -name settings.gradle -o -name settings.gradle.kts \) -type f | head -n 1)
+
           if [ -z "$SETTINGS" ]; then
-            echo "Não foi encontrado settings.gradle no ZIP."
-            find extracted -maxdepth 4 -type f | head -n 80
+            echo "ERRO: settings.gradle não encontrado."
+            find extracted -maxdepth 5 -type f | head -n 100
             exit 1
           fi
+
           echo "PROJECT_DIR=$(dirname "$SETTINGS")" >> "$GITHUB_ENV"
+          echo "Projeto localizado: $(dirname "$SETTINGS")"
 
       - name: Set up Java
         uses: actions/setup-java@v4
