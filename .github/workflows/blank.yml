@@ -18,7 +18,15 @@ jobs:
 
       - name: Extract new project ZIP
         run: |
-          ZIP_FILE="./Duelpack_android_v0.03.zip"
+          ZIP_FILE=$(find . -maxdepth 1 -type f -iname '*duelpack*.zip' | head -n 1)
+
+if [ -z "$ZIP_FILE" ]; then
+  echo "Nenhum ZIP do DuelPack encontrado na página principal!"
+  ls -la
+  exit 1
+fi
+
+echo "ZIP encontrado: $ZIP_FILE"
 
           if [ ! -f "$ZIP_FILE" ]; then
             echo "ZIP do projeto novo não encontrado!"
