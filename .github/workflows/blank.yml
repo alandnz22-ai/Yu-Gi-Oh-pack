@@ -17,18 +17,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: 
       - name: Find project ZIP
         run: |
           echo "Arquivos na raiz:"
           ls -la
-          ZIP_FILE=$(find . -maxdepth 1 -type f -iname '*duelpack*.zip' | head -n 1)
-          if [ -z "$ZIP_FILE" ]; then
-            echo "Nenhum ZIP do DuelPack encontrado."
+
+          ZIP_FILE="./DuelPack_Android_v0.3.1_imagens_teste.zip"
+
+          if [ ! -f "$ZIP_FILE" ]; then
+            echo "ERRO: ZIP v0.3.1 não encontrado."
             exit 1
           fi
-          echo "ZIP encontrado: $ZIP_FILE"
+
+          echo "ZIP selecionado: $ZIP_FILE"
           mkdir extracted
           unzip -q "$ZIP_FILE" -d extracted
+
 
       - name: Locate Android project
         run: |
